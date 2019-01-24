@@ -17,12 +17,12 @@ define :shepard do |pitch, time = 1, attack = 0.5, volume = 1, synth = :sine, ce
 end
 
 # example 1: single call with alternative synth and center
-shepard :g, 2, 0.9, 0.8, :blade, 100
+shepard :g, 2, 0.9, 0.8, :blade, 86
 
 sleep 0.5
 
 # example 2: single call with alternative same synth and different center
-shepard :g, 2, 0.9, 0.8, :blade, 60
+shepard :g, 2, 0.9, 0.8, :blade, 50
 
 sleep 0.5
 
@@ -33,11 +33,19 @@ sleep 0.5
   end
 end
 
-sleep 0.5
+sleep 1
 
 # example 4: call with numbers that move on a sinus curve
-x = (10..200).to_a
-x = x.collect{|x| Math.cos(0.1*x)}
+x = (-200..0).to_a.collect{|x| Math.sin(0.1*x)}
 for each_tone in x
-  shepard each_tone, 0.05, 0.1
+  shepard each_tone, 0.05, 0.1, 1, :sine, 82
+end
+
+# example 5: rising tones and falling center
+y = (0..360).to_a.collect{|y| 0.1*y}
+z = (100..820).to_a.reverse.select {|x| x % 2 == 0}.collect{|z| 0.1*z}
+i = 0
+for each_tone in y
+  shepard each_tone, 0.1, 0.1, 1, :sine, z[i]
+  i = inc (i)
 end
