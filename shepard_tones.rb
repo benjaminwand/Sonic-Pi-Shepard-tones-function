@@ -34,8 +34,8 @@ end
 sleep 1
 
 # example 4: call with numbers that move on a sine wave
-a = Range.new(1,3.5).step(0.0125).to_a
-x = (-200..0).map {|x| Math.sin(0.1*x)*a[x-1]}
+amplitude = Range.new(1,3.5).step(0.0125).to_a
+x = (-200..0).map {|x| Math.sin(0.1*x) * amplitude[x]}
 for each_tone in x
   shepard each_tone, 0.05, 0.1, 1, :sine, 86
 end
@@ -47,6 +47,10 @@ for (each_y, each_z) in y.zip(z)
   shepard each_y, 0.1, 0.1, 1, :sine, each_z
 end
 
-# todo: mehrere Töne mit [] einführen
-# sinushöhe variieren
-
+# example 6: endlessly rising tones
+loop do
+  x = Range.new(0,11.9).step(0.1)
+  for each_y in x
+    shepard each_y, 0.05, 0.1
+  end
+end
