@@ -41,13 +41,20 @@ for each_tone in x
 end
 
 # example 5: rising tones and falling center
-y = Range.new(0,36).step(0.1)
-z = Range.new(50,86).step(0.1).to_a.reverse
+y = Range.new(0,35.9).step(0.1)
+z = Range.new(50,85.9).step(0.1).to_a.reverse
 for (each_y, each_z) in y.zip(z)
   shepard each_y, 0.1, 0.1, 1, :sine, each_z
 end
 
-# example 6: endlessly rising tones
+# example 6: rising tones and falling center, entering and leaving the auditory range
+y = Range.new(0,71.8).step(0.2)
+z = Range.new(-50,309).to_a.reverse
+for (each_y, each_z) in y.zip(z)
+  shepard each_y, 0.1, 0.1, 1, :sine, each_z
+end
+
+# example 7: endlessly rising tones
 loop do
   x = Range.new(0,11.9).step(0.1)
   for each_y in x
