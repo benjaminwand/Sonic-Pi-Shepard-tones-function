@@ -1,18 +1,32 @@
 define :shepard do |pitch, time = 1, attack = 0.5, volume = 1, synth = :sine, center = 78|
   use_synth synth
+  if pitch.class == Array
+    pitch.each do |one_pitch|                   # recursion
+      in_thread do
+        shepard one_pitch, time, attack, volume, synth, center
+      end
+    end
+  end
   (1..9).each do |octave|                       # 9 octaves
     if pitch.class == Symbol
-      tones = (note_info pitch, octave: octave).midi_note    # make number
-    else                                        # assuming an int or float
-      tones = pitch % 12 + 12 * (octave + 1)    # midi number of tones
+      tones = (note_info pitch, octave: octave).midi_note    # make numbers
     end
-    equal_amp = 30.0 / tones ** 1.5 * volume    # all at same-ish volume
-    middle =  (tones - center)/10.7             # centers bell curve, 78 -> [-5 .. 5]
-    gauss = equal_amp * 2**-( middle**2/10)     # bell curve * equalized volume
-    play tones, amp: gauss, attack: attack, sustain: time, release: attack
+    if pitch.class == Float or pitch.class == Integer
+      tones = pitch % 12 + 12 * (octave + 1)    # midi numbers of tone
+    end
+    if tones.class == Integer                   # because sometimes 'tones' turns Nil
+      equal_amp = 30.0 / tones ** 1.5 * volume  # all at same-ish volume
+      middle =  (tones - center)/10.7           # centers bell curve, 78 -> [-5 .. 5]
+      gauss = equal_amp * 2**-( middle**2/10)   # bell curve * equalized volume
+      play tones, amp: gauss, attack: attack, sustain: time, release: attack
+    end
   end
   sleep time
 end
+
+#examlpe 0: array
+shepard [10, :e, :g], 2, 0.9, 0.8, :blade, 86
+sleep 1
 
 # example 1: single call with alternative synth and center
 shepard :g, 2, 0.9, 0.8, :blade, 86
